@@ -50,11 +50,14 @@ class FeishuOAuth2Client(OAuth2Client):
             raise OAuth2Error("Error retrieving app access token: %s" % resp.content)
         return access_token["app_access_token"]
 
-    def get_access_token(self, code):
+    def get_access_token(self, code, **extra_data):
         data = {
             "grant_type": "authorization_code",
             "code": code,
             "app_access_token": self.app_access_token(),
+            # Trailing comma added by Black is not compatible with Python 3.5.
+            # https://github.com/psf/black/issues/1356
+            **extra_data  # fmt: skip
         }
         params = None
         self._strip_empty_keys(data)
